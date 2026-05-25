@@ -95,7 +95,6 @@ public class ScrambleQTEManager : MonoBehaviour
 
         panel.SetActive(true);
 
-        // 💀 SLOW MOTION START
         Time.timeScale = slowMotionScale;
         Time.fixedDeltaTime = 0.02f * slowMotionScale;
     }
@@ -196,11 +195,8 @@ public class ScrambleQTEManager : MonoBehaviour
         if (SlowMotion.instance != null)
             SlowMotion.instance.Play(0.1f, 0.5f);
 
-        if (darkness >= maxDarkness)
-        {
-            if (PlayerHealth.instance != null)
-                PlayerHealth.instance.TakeDamage(999);
-        }
+        if (PlayerHealth.instance != null)
+            PlayerHealth.instance.TakeDamage(PlayerHealth.instance.maxHealth * 0.25f, true);
 
         EndQTE();
     }
@@ -212,7 +208,6 @@ public class ScrambleQTEManager : MonoBehaviour
 
         panel.SetActive(false);
 
-        // 💀 RESET TIME
         EndTimeEffect();
     }
 }

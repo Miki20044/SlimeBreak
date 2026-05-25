@@ -18,7 +18,12 @@ public class KillPlayer : MonoBehaviour
         if (p != null && p.isInvincible)
             return;
 
+        PlayerHealth ph = other.GetComponent<PlayerHealth>();
+        if (ph != null)
+            ph.TakeDamage(9999);
+        else
+            Destroy(other.gameObject);
+
         gameManager.GameOver();
-        Destroy(other.gameObject);
     }
 }

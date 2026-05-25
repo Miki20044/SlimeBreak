@@ -111,9 +111,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 1587044449755511347, guid: 800f040342680304db05524c89c0dcc1, type: 3}
-  shootForce: 5
-  shootInterval: 0.2
   maxStamina: 50
   staminaDrain: 0.5
   staminaRegen: 5
   restTime: 0.5
+  circleInterval: 0.8
+  circleForce: 5
+  spiralInterval: 0.15
+  spiralForce: 4
+  aimedInterval: 1.2
+  aimedForce: 6
+  waveInterval: 3
+  waveForce: 5
+  phase2Multiplier: 1.25
+  phase3Multiplier: 1.5
+  phase4Multiplier: 2

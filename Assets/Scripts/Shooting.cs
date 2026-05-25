@@ -44,14 +44,42 @@ public class RandomShooter : MonoBehaviour
     public float waveInterval = 3f;
     public float waveForce = 5f;
 
+    [Header("Phase Multipliers")]
+    public float phase2Multiplier = 1.25f; // 75% hp
+    public float phase3Multiplier = 1.5f;  // 50% hp
+    public float phase4Multiplier = 2f;    // 25% hp
+
     void Start()
     {
-        currentStamina = maxStamina;
-        boss = GetComponent<BossController>();
+      currentStamina = maxStamina;
+      boss = GetComponent<BossController>();
 
-        patternTimer = 0f;
-        attackTimer = 0f;
-        patternIndex = 0;
+      if (DifficultyManager.instance != null)
+      {
+          float m = DifficultyManager.instance.GetStaminaMultiplier();
+          maxStamina *= m;
+          currentStamina = maxStamina;
+          staminaDrain /= m;
+      }
+
+      patternTimer = 0f;
+      attackTimer = 0f;
+      patternIndex = 0;
+    }
+    float GetPhaseMultiplier()
+    {
+      float hp = boss.GetHealthPercent();
+      float phase = 1f;
+
+      if (hp <= 0.25f) phase = phase4Multiplier;
+      else if (hp <= 0.5f) phase = phase3Multiplier;
+      else if (hp <= 0.75f) phase = phase2Multiplier;
+
+      float difficulty = DifficultyManager.instance != null
+        ? DifficultyManager.instance.GetProjectileMultiplier()
+        : 1f;
+
+      return phase * difficulty;
     }
 
     void Update()
@@ -76,7 +104,6 @@ public class RandomShooter : MonoBehaviour
         attackTimer -= Time.deltaTime;
         waveCooldownTimer -= Time.deltaTime;
 
-        // 🎯 wybór patternu
         if (patternTimer <= 0)
         {
             patternIndex = Random.Range(0, 4);
@@ -89,17 +116,14 @@ public class RandomShooter : MonoBehaviour
 
         if (currentStamina <= 0) return;
 
-        // 💀 WAVE NIE BLOKUJE STAMINY ANI UPDATE
         bool canShoot = !(isWaveActive || waveCooldownTimer > 0f);
 
-        // 💥 STRZELANIE
         if (canShoot && attackTimer <= 0f)
         {
             ShootPattern();
             attackTimer = currentAttackInterval;
         }
 
-        // 💀 stamina działa NORMALNIE cały czas
         currentStamina -= staminaDrain * Time.deltaTime;
 
         if (currentStamina <= 0)
@@ -129,18 +153,9 @@ public class RandomShooter : MonoBehaviour
     {
         switch (patternIndex)
         {
-            case 0:
-                CircleBurst();
-                break;
-
-            case 1:
-                Spiral();
-                break;
-
-            case 2:
-                AimedBurst();
-                break;
-
+            case 0: CircleBurst(); break;
+            case 1: Spiral(); break;
+            case 2: AimedBurst(); break;
             case 3:
                 if (!isWaveActive)
                     StartCoroutine(CircleWave());
@@ -155,13 +170,13 @@ public class RandomShooter : MonoBehaviour
         for (int i = 0; i < bullets; i++)
         {
             float angle = i * (360f / bullets);
-            ShootAngle(angle, circleForce);
+            ShootAngle(angle, circleForce * GetPhaseMultiplier());
         }
     }
 
     void Spiral()
     {
-        ShootAngle(spiralAngle, spiralForce);
+        ShootAngle(spiralAngle, spiralForce * GetPhaseMultiplier());
         spiralAngle += 25f;
     }
 
@@ -172,7 +187,7 @@ public class RandomShooter : MonoBehaviour
         if (player == null) return;
 
         Vector2 dir = (player.position - transform.position).normalized;
-        Shoot(dir, aimedForce);
+        Shoot(dir, aimedForce * GetPhaseMultiplier());
     }
 
     IEnumerator CircleWave()
@@ -188,7 +203,7 @@ public class RandomShooter : MonoBehaviour
             for (int i = 0; i < bulletsPerRing; i++)
             {
                 float angle = i * (360f / bulletsPerRing);
-                ShootAngle(angle, waveForce);
+                ShootAngle(angle, waveForce * GetPhaseMultiplier());
             }
 
             yield return new WaitForSeconds(ringDelay);

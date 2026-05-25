@@ -11,7 +11,7 @@ public class QTEManager : MonoBehaviour
     public RectTransform successZone;
     public RectTransform movingLine;
     public Text keyText;
-    public CanvasGroup screenFade; // do przyciemnienia
+    public CanvasGroup screenFade;
 
     [Header("Settings")]
     public float interval = 10f;
@@ -26,7 +26,6 @@ public class QTEManager : MonoBehaviour
     float successX;
     KeyCode requiredKey;
 
-    int failCount = 0;
 
     void Awake()
     {
@@ -75,7 +74,6 @@ public class QTEManager : MonoBehaviour
 
         bar.gameObject.SetActive(true);
 
-        // LOSOWA POZYCJA NA EKRANIE
         bar.anchoredPosition = new Vector2(
             Random.Range(-300f, 300f),
             Random.Range(-150f, 150f)
@@ -96,7 +94,6 @@ public class QTEManager : MonoBehaviour
 
         keyText.text = requiredKey.ToString();
 
-        // ? 1 SEKUNDA NIC NIE ROBI
         yield return new WaitForSeconds(1f);
 
         startedMoving = true;
@@ -123,26 +120,17 @@ public class QTEManager : MonoBehaviour
 
     void Fail()
     {
-        failCount++;
-
         if (PlayerHealth.instance != null)
-            PlayerHealth.instance.TakeDamage(25);
+        PlayerHealth.instance.TakeDamage(PlayerHealth.instance.maxHealth * 0.25f, true);
 
-        // efekt
         if (CameraShake.instance != null)
-            CameraShake.instance.Shake(0.2f, 0.1f);
+        CameraShake.instance.Shake(0.2f, 0.1f);
 
         if (SlowMotion.instance != null)
-            SlowMotion.instance.Play(0.1f, 0.5f);
+        SlowMotion.instance.Play(0.1f, 0.5f);
 
         if (screenFade != null)
             StartCoroutine(FadeFlash());
-
-        if (failCount >= 4)
-        {
-            if (PlayerHealth.instance != null)
-                PlayerHealth.instance.TakeDamage(999);
-        }
 
         EndQTE();
     }

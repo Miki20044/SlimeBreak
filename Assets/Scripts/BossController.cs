@@ -54,12 +54,25 @@ public class BossController : MonoBehaviour
 
         WakeUp();
 
-        if (currentHealth <= 0)
-            Destroy(gameObject);
+       if (currentHealth <= 0)
+    {
+    currentHealth = 0;
+    if (healthBar != null)
+        healthBar.fillAmount = 0f;
+
+    if (GameManager.instance != null)
+        GameManager.instance.WinGame();
+
+    Destroy(gameObject);
+    }
     }
 
     public bool CanBeDamaged()
     {
         return isVulnerable && !wasHitThisSleep;
+    }
+    public float GetHealthPercent()
+    {
+      return currentHealth / maxHealth;
     }
 }

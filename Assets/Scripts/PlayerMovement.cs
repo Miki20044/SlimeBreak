@@ -22,6 +22,19 @@ public class PlayerMovement : MonoBehaviour
     public float pullSpeed = 3f;
     public bool isBeingPulled = false;
 
+    float GetCurrentSpeed()
+    {
+        if (PlayerHealth.instance == null) return speed;
+
+        float hp = PlayerHealth.instance.currentHealth / PlayerHealth.instance.maxHealth;
+
+        // 100% hp = speed, 25% hp = speed * 0.5
+        float speedMultiplier = Mathf.Lerp(0.5f, 1f, (hp - 0.25f) / 0.75f);
+        speedMultiplier = Mathf.Clamp(speedMultiplier, 0.5f, 1f);
+
+        return speed * speedMultiplier;
+    }
+
     void Update()
     {
         if (isBeingPulled) return;
@@ -44,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
         float y = Input.GetAxis("Vertical");
 
         Vector3 move = new Vector3(x, y, 0);
-        transform.position += move * speed * Time.deltaTime;
+        transform.position += move * GetCurrentSpeed() * Time.deltaTime;
 
         if (Input.GetKeyDown(KeyCode.Space) && cooldownTimer <= 0)
         {
