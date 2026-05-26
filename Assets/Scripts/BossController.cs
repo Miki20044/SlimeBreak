@@ -32,8 +32,13 @@ public class BossController : MonoBehaviour
         if (healthBar != null)
             healthBar.fillAmount = currentHealth / maxHealth;
 
-        if (staminaBar != null && shooter != null)
-            staminaBar.fillAmount = shooter.GetStaminaPercent();
+        if (staminaBar != null)
+        {
+            if (BossPatternController.instance != null)
+                staminaBar.fillAmount = BossPatternController.instance.GetStaminaPercent();
+            else if (shooter != null)
+                staminaBar.fillAmount = shooter.GetStaminaPercent();
+        }
     }
 
     public void OnSleepStart()
@@ -83,6 +88,10 @@ public class BossController : MonoBehaviour
         isVulnerable = false;
         wasHitThisSleep = false;
 
+        if (BossPatternController.instance != null)
+            BossPatternController.instance.ApplyPhase2(staminaMult, speedMult);
+
+        // fallback dla starej RandomShooter mechaniki (jesli kiedys wroci)
         RandomShooter rs = GetComponent<RandomShooter>();
         if (rs != null)
         {

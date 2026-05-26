@@ -136,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator IFrames(float duration)
     {
         isInvincible = true;
-        yield return new WaitForSeconds(duration + 0.1f);
+        yield return new WaitForSeconds(duration + 0.3f);
         isInvincible = false;
     }
 }

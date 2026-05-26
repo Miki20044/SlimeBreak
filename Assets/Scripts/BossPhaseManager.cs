@@ -10,6 +10,10 @@ public class BossPhaseManager : MonoBehaviour
     public float phase2SpeedMultiplier = 1.5f;
     public float phase2HPPercent = 0.5f;
 
+    [Header("Phase 2 Visual (opcjonalne)")]
+    public Sprite phase2Sprite;
+    public Color phase2Color = Color.white;
+
     [Header("Audio")]
     public AudioSource musicSource;
     public AudioClip phase2Music;
@@ -115,6 +119,18 @@ public class BossPhaseManager : MonoBehaviour
         // reset pozycji i statystyk bossa
         transform.position = originalPos;
         boss.ResetForPhase2(phase2HPPercent, phase2StaminaMultiplier, phase2SpeedMultiplier);
+
+        // zmiana wygladu na faze 2
+        if (sr != null)
+        {
+            if (phase2Sprite != null)
+                sr.sprite = phase2Sprite;
+
+            // color zachowany ale z alpha = 0 (bedzie fade in)
+            Color phase2BaseColor = phase2Color;
+            phase2BaseColor.a = 0f;
+            sr.color = phase2BaseColor;
+        }
 
         // fade in
         t = 0f;

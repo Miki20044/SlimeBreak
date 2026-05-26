@@ -397,18 +397,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1587044449755511347, guid: 800f040342680304db05524c89c0dcc1, type: 3}
   m_PrefabInstance: {fileID: 690965778035530614}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &90029772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 90029767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2202b7eddc7d6014dacab2eb24236982, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &98831037
 GameObject:
   m_ObjectHideFlags: 0
@@ -2916,8 +2904,10 @@ MonoBehaviour:
   phase2StaminaMultiplier: 0.5
   phase2SpeedMultiplier: 1.5
   phase2HPPercent: 0.5
+  phase2Sprite: {fileID: 0}
+  phase2Color: {r: 1, g: 1, b: 1, a: 1}
   musicSource: {fileID: 938771954}
-  phase2Music: {fileID: 0}
+  phase2Music: {fileID: 8300000, guid: fc8699054148474458091f7437694f55, type: 3}
   currentPhase: 1
 --- !u!114 &938771960
 MonoBehaviour:
@@ -2960,6 +2950,9 @@ MonoBehaviour:
   laserRotationCount: 2
   laserDirectionPause: 1
   laserSound: {fileID: 0}
+  maxStamina: 100
+  staminaPerAttack: 20
+  restDuration: 2
 --- !u!1 &995855181
 GameObject:
   m_ObjectHideFlags: 0
@@ -6292,10 +6285,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1587044449755511347, guid: 800f040342680304db05524c89c0dcc1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 90029772}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 800f040342680304db05524c89c0dcc1, type: 3}
 --- !u!212 &1189658465974980618
 SpriteRenderer:

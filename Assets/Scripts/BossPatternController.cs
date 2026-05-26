@@ -46,6 +46,15 @@ public class BossPatternController : MonoBehaviour
     public float laserDirectionPause = 1f;
     public AudioClip laserSound;
 
+    [Header("Stamina / Sleep")]
+    public float maxStamina = 100f;
+    public float staminaPerAttack = 20f;
+    public float restDuration = 2f;
+
+    private float currentStamina;
+    private bool isResting = false;
+    private float phase2SpeedBoost = 1f;
+
     private AudioSource audioSource;
     private BossController boss;
     private bool isAttacking = false;
@@ -59,13 +68,25 @@ public class BossPatternController : MonoBehaviour
     void Start()
     {
         boss = GetComponent<BossController>();
+
+        // skaluj staminy przez difficulty
+        if (DifficultyManager.instance != null)
+            maxStamina *= DifficultyManager.instance.GetStaminaMultiplier();
+
+        currentStamina = maxStamina;
+    }
+
+    public float GetStaminaPercent()
+    {
+        return currentStamina / maxStamina;
     }
 
     float ProjMult()
     {
-        return DifficultyManager.instance != null
+        float baseMult = DifficultyManager.instance != null
             ? DifficultyManager.instance.GetProjectileMultiplier()
             : 1f;
+        return baseMult * phase2SpeedBoost;
     }
 
     float ReactionMult()
@@ -73,6 +94,13 @@ public class BossPatternController : MonoBehaviour
         return DifficultyManager.instance != null
             ? DifficultyManager.instance.GetReactionTimeMultiplier()
             : 1f;
+    }
+
+    public void ApplyPhase2(float staminaMult, float speedBoost)
+    {
+        maxStamina *= staminaMult;
+        currentStamina = maxStamina;
+        phase2SpeedBoost = speedBoost;
     }
 
     public void StartAttacking()
@@ -85,7 +113,7 @@ public class BossPatternController : MonoBehaviour
     {
         while (true)
         {
-            if (isAttacking)
+            if (isAttacking || isResting)
             {
                 yield return null;
                 continue;
@@ -105,7 +133,29 @@ public class BossPatternController : MonoBehaviour
             }
 
             isAttacking = false;
+
+            // drain stamina po ataku
+            currentStamina -= staminaPerAttack;
+            if (currentStamina <= 0)
+            {
+                currentStamina = 0;
+                yield return StartCoroutine(RestCycle());
+            }
         }
+    }
+
+    IEnumerator RestCycle()
+    {
+        isResting = true;
+
+        if (boss != null) boss.OnSleepStart();
+
+        yield return new WaitForSeconds(restDuration);
+
+        if (boss != null) boss.WakeUp();
+
+        currentStamina = maxStamina;
+        isResting = false;
     }
 
     // ==================== ATAK 1 - PRZEJEZDZAJACE LINIE ====================
@@ -290,13 +340,39 @@ public class BossPatternController : MonoBehaviour
                 rb.velocity = -rb.velocity;
         }
 
-        // czas powrotu = czas wylotu (zeby zdazyly wrocic do bossa)
-        yield return new WaitForSeconds(bulletOutwardTime + pauseBeforeReturn + 0.5f);
+        // czekaj az kazda kulka wroci do bossa (z safety timeoutem)
+        float safetyTimeout = (bulletOutwardTime + pauseBeforeReturn) * 1.5f + 1f;
+        float elapsed = 0f;
+        int remaining = bullets.Count;
 
-        foreach (GameObject b in bullets)
+        while (remaining > 0 && elapsed < safetyTimeout)
         {
-            if (b != null)
-                Destroy(b);
+            elapsed += Time.deltaTime;
+            remaining = 0;
+
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                if (bullets[i] == null) continue;
+
+                float dist = Vector2.Distance(bullets[i].transform.position, transform.position);
+                if (dist < 0.5f)
+                {
+                    Destroy(bullets[i]);
+                    bullets[i] = null;
+                }
+                else
+                {
+                    remaining++;
+                }
+            }
+
+            yield return null;
+        }
+
+        // sprzatnij ewentualne resztki
+        for (int i = 0; i < bullets.Count; i++)
+        {
+            if (bullets[i] != null) Destroy(bullets[i]);
         }
     }
 
