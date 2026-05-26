@@ -14,7 +14,7 @@ public class ScrambleQTEManager : MonoBehaviour
     public CanvasGroup darknessOverlay;
 
     [Header("QTE")]
-    public float interval = 10f;
+    public float interval = 15f;
     public float qteDuration = 5f;
     public int sequenceLength = 6;
 
@@ -24,6 +24,11 @@ public class ScrambleQTEManager : MonoBehaviour
     [Header("Darkness")]
     public float darknessIncrease = 0.25f;
     public float maxDarkness = 1f;
+
+    [Header("Music")]
+    public float qtePitch = 0.75f;
+
+    float startDelay = 10f;
 
     KeyCode[] possibleKeys =
     {
@@ -52,6 +57,7 @@ public class ScrambleQTEManager : MonoBehaviour
     void Start()
     {
         timer = interval;
+        startDelay = 10f;
         panel.SetActive(false);
 
         if (darknessOverlay != null)
@@ -62,9 +68,15 @@ public class ScrambleQTEManager : MonoBehaviour
     {
         if (!active)
         {
+            if (startDelay > 0)
+            {
+                startDelay -= Time.unscaledDeltaTime;
+                return;
+            }
+
             timer -= Time.unscaledDeltaTime;
 
-            if (timer <= 0)
+            if (timer <= 0 && BossIntro.instance != null && BossIntro.instance.CanAttack)
                 StartQTE();
 
             return;
@@ -94,6 +106,9 @@ public class ScrambleQTEManager : MonoBehaviour
         UpdateText();
 
         panel.SetActive(true);
+
+        if (BossIntro.instance != null && BossIntro.instance.musicSource != null)
+            BossIntro.instance.musicSource.pitch = qtePitch;
 
         Time.timeScale = slowMotionScale;
         Time.fixedDeltaTime = 0.02f * slowMotionScale;
@@ -207,6 +222,9 @@ public class ScrambleQTEManager : MonoBehaviour
         timer = interval;
 
         panel.SetActive(false);
+
+        if (BossIntro.instance != null && BossIntro.instance.musicSource != null)
+            BossIntro.instance.musicSource.pitch = 1f;
 
         EndTimeEffect();
     }

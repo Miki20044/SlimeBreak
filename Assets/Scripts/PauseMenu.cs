@@ -20,7 +20,7 @@ public class PauseMenu : MonoBehaviour
         {
             if (isPaused)
                 Resume();
-            else
+            else if (Time.timeScale > 0f)
                 Pause();
         }
     }
@@ -29,6 +29,7 @@ public class PauseMenu : MonoBehaviour
     {
         isPaused = true;
         Time.timeScale = 0f;
+        AudioListener.pause = true;
 
         if (pausePanel != null)
             pausePanel.SetActive(true);
@@ -38,6 +39,7 @@ public class PauseMenu : MonoBehaviour
     {
         isPaused = false;
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         if (pausePanel != null)
             pausePanel.SetActive(false);
@@ -46,12 +48,14 @@ public class PauseMenu : MonoBehaviour
     public void GoToMainMenu()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
         SceneManager.LoadScene(0);
     }
 
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
         SceneManager.LoadScene(1);
     }
 }

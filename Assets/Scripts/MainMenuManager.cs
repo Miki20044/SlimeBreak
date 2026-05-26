@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class MainMenuManager : MonoBehaviour
 {
     public GameObject settingsPanel;
+    public GameObject creditsPanel;
 
     void Start()
     {
@@ -15,6 +16,9 @@ public class MainMenuManager : MonoBehaviour
 
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
+
+        if (creditsPanel != null)
+            creditsPanel.SetActive(false);
     }
 
     public void StartGame()
@@ -32,6 +36,18 @@ public class MainMenuManager : MonoBehaviour
     {
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
+    }
+
+    public void OpenCredits()
+    {
+        if (creditsPanel != null)
+            creditsPanel.SetActive(true);
+    }
+
+    public void CloseCredits()
+    {
+        if (creditsPanel != null)
+            creditsPanel.SetActive(false);
     }
 
     public void SetNormal()

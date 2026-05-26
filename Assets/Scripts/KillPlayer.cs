@@ -2,13 +2,6 @@ using UnityEngine;
 
 public class KillPlayer : MonoBehaviour
 {
-    private GameManager gameManager;
-
-    void Start()
-    {
-        gameManager = FindFirstObjectByType<GameManager>();
-    }
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
@@ -20,10 +13,16 @@ public class KillPlayer : MonoBehaviour
 
         PlayerHealth ph = other.GetComponent<PlayerHealth>();
         if (ph != null)
+        {
+            // PlayerHealth.Die() samo wywola GameManager.GameOver()
             ph.TakeDamage(9999);
+        }
         else
+        {
+            // fallback: player bez PlayerHealth
             Destroy(other.gameObject);
-
-        gameManager.GameOver();
+            if (GameManager.instance != null)
+                GameManager.instance.GameOver();
+        }
     }
 }

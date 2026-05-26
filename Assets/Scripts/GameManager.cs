@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     public GameObject sleepScreen;
     public GameObject winScreen;
 
+    [Header("Music")]
+    public AudioSource musicSource;
+
     void Awake()
     {
         instance = this;
@@ -18,6 +21,9 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
 
+        if (musicSource != null)
+            musicSource.Stop();
+
         if (endScreen != null)
             endScreen.SetActive(true);
     }
@@ -26,6 +32,9 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
 
+        if (musicSource != null)
+            musicSource.Stop();
+
         if (sleepScreen != null)
             sleepScreen.SetActive(true);
     }
@@ -33,6 +42,9 @@ public class GameManager : MonoBehaviour
     public void WinGame()
     {
         Time.timeScale = 0f;
+
+        if (musicSource != null)
+            musicSource.Stop();
 
         if (winScreen != null)
             winScreen.SetActive(true);

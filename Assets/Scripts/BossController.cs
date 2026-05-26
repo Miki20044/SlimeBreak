@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class BossController : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class BossController : MonoBehaviour
 
     void Start()
     {
+        if (DifficultyManager.instance != null)
+            maxHealth *= DifficultyManager.instance.GetBossHPMultiplier();
+
         currentHealth = maxHealth;
         shooter = GetComponent<RandomShooter>();
     }
@@ -54,25 +58,62 @@ public class BossController : MonoBehaviour
 
         WakeUp();
 
-       if (currentHealth <= 0)
-    {
-    currentHealth = 0;
-    if (healthBar != null)
-        healthBar.fillAmount = 0f;
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            if (healthBar != null)
+                healthBar.fillAmount = 0f;
 
-    if (GameManager.instance != null)
-        GameManager.instance.WinGame();
+            BossPhaseManager pm = GetComponent<BossPhaseManager>();
 
-    Destroy(gameObject);
+            if (pm != null && pm.currentPhase == 1)
+            {
+                pm.TriggerPhase2();
+            }
+            else
+            {
+                StartCoroutine(DeathRoutine());
+            }
+        }
     }
+
+    public void ResetForPhase2(float hpPercent, float staminaMult, float speedMult)
+    {
+        currentHealth = maxHealth * hpPercent;
+        isVulnerable = false;
+        wasHitThisSleep = false;
+
+        RandomShooter rs = GetComponent<RandomShooter>();
+        if (rs != null)
+        {
+            rs.maxStamina *= staminaMult;
+            rs.circleForce *= speedMult;
+            rs.spiralForce *= speedMult;
+            rs.aimedForce *= speedMult;
+            rs.waveForce *= speedMult;
+        }
+    }
+
+    IEnumerator DeathRoutine()
+    {
+        if (BossDeathMessage.instance != null)
+            BossDeathMessage.instance.ShowMessage("You've defeated me...");
+
+        yield return new WaitForSeconds(3.5f);
+
+        if (GameManager.instance != null)
+            GameManager.instance.WinGame();
+
+        Destroy(gameObject);
     }
 
     public bool CanBeDamaged()
     {
         return isVulnerable && !wasHitThisSleep;
     }
+
     public float GetHealthPercent()
     {
-      return currentHealth / maxHealth;
+        return currentHealth / maxHealth;
     }
 }

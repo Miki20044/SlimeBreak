@@ -24,7 +24,11 @@ public class PlayerMovement : MonoBehaviour
 
     float GetCurrentSpeed()
     {
-        if (PlayerHealth.instance == null) return speed;
+        float difficultyMult = DifficultyManager.instance != null
+            ? DifficultyManager.instance.GetPlayerSpeedMultiplier()
+            : 1f;
+
+        if (PlayerHealth.instance == null) return speed * difficultyMult;
 
         float hp = PlayerHealth.instance.currentHealth / PlayerHealth.instance.maxHealth;
 
@@ -32,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
         float speedMultiplier = Mathf.Lerp(0.5f, 1f, (hp - 0.25f) / 0.75f);
         speedMultiplier = Mathf.Clamp(speedMultiplier, 0.5f, 1f);
 
-        return speed * speedMultiplier;
+        return speed * speedMultiplier * difficultyMult;
     }
 
     void Update()
@@ -61,13 +65,22 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && cooldownTimer <= 0)
         {
+            float dashLengthMult = DifficultyManager.instance != null
+                ? DifficultyManager.instance.GetDashLengthMultiplier()
+                : 1f;
+            float dashCooldownMult = DifficultyManager.instance != null
+                ? DifficultyManager.instance.GetDashCooldownMultiplier()
+                : 1f;
+
+            float effectiveDashTime = dashTime * dashLengthMult;
+
             dashDir = (move != Vector3.zero) ? move.normalized : transform.right;
 
-            StartCoroutine(IFrames());
+            StartCoroutine(IFrames(effectiveDashTime));
 
             dashing = true;
-            dashTimer = dashTime;
-            cooldownTimer = dashCooldown;
+            dashTimer = effectiveDashTime;
+            cooldownTimer = dashCooldown * dashCooldownMult;
         }
     }
 
@@ -120,10 +133,10 @@ public class PlayerMovement : MonoBehaviour
         transform.position = end;
     }
 
-    IEnumerator IFrames()
+    IEnumerator IFrames(float duration)
     {
         isInvincible = true;
-        yield return new WaitForSeconds(dashTime);
+        yield return new WaitForSeconds(duration + 0.1f);
         isInvincible = false;
     }
 }

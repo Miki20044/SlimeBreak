@@ -24,7 +24,7 @@ public class DifficultyManager : MonoBehaviour
         switch (current)
         {
             case Difficulty.Hard: return 1.5f;
-            case Difficulty.Hell: return 2.25f;
+            case Difficulty.Hell: return 2f;
             default: return 1f;
         }
     }
@@ -33,8 +33,57 @@ public class DifficultyManager : MonoBehaviour
     {
         switch (current)
         {
+            case Difficulty.Hard: return 1.25f;
+            case Difficulty.Hell: return 3f;
+            default: return 1f;
+        }
+    }
+
+    public float GetBossHPMultiplier()
+    {
+        switch (current)
+        {
             case Difficulty.Hard: return 1.5f;
-            case Difficulty.Hell: return 2.25f;
+            case Difficulty.Hell: return 3f;
+            default: return 1f;
+        }
+    }
+
+    public float GetPlayerSpeedMultiplier()
+    {
+        switch (current)
+        {
+            case Difficulty.Hard: return 0.8f;
+            case Difficulty.Hell: return 0.75f;
+            default: return 1f;
+        }
+    }
+
+    public float GetReactionTimeMultiplier()
+    {
+        switch (current)
+        {
+            case Difficulty.Hell: return 0.6f;
+            default: return 1f;
+        }
+    }
+
+    public float GetDashLengthMultiplier()
+    {
+        switch (current)
+        {
+            case Difficulty.Hard: return 0.8f;
+            case Difficulty.Hell: return 0.6f;
+            default: return 1f;
+        }
+    }
+
+    public float GetDashCooldownMultiplier()
+    {
+        switch (current)
+        {
+            case Difficulty.Hard: return 1.25f;
+            case Difficulty.Hell: return 1.5f;
             default: return 1f;
         }
     }
