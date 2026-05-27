@@ -1051,7 +1051,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 282295206}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 388182961}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: Resume
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &282295206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1638,7 +1650,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 591154095}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 388182961}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: RestartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &591154095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2210,7 +2234,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 764166921}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 388182961}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: GoToMainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &764166921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3080,10 +3116,40 @@ MonoBehaviour:
   returnBulletSound: {fileID: 0}
   laserWarningDuration: 1.3
   laserPreviewSpeed: 30
+  laserStartRotateSpeed: 30
   laserRotateSpeed: 90
+  laserAccelerationTime: 1.5
   laserRotationCount: 2
   laserDirectionPause: 1
   laserSound: {fileID: 0}
+  fallingTotalProjectiles: 45
+  fallingSpawnInterval: 0.1
+  fallingBaseSpeed: 3.5
+  fallingMaxSpeedMultiplier: 1.8
+  fallingProjectileLifetime: 5.5
+  fallingProjectileScale: 0.25
+  fallingRainSound: {fileID: 0}
+  bounceBulletCount: 12
+  bounceBulletSpeed: 5
+  bounceMaxBounces: 3
+  bounceAttackDuration: 5
+  ringCount: 4
+  bulletsPerRing: 12
+  ringStagger: 0.7
+  ringBulletSpeed: 3.5
+  ringBulletLifetime: 3
+  bombCount: 6
+  bombWarningTime: 1.2
+  bombRadius: 1.5
+  bombShrapnelCount: 8
+  bombShrapnelSpeed: 4
+  wallThickness: 4
+  wallGapWidth: 2.2
+  wallCloseDuration: 2
+  wallWarningDuration: 0.6
+  dashLineThickness: 1.2
+  dashLineWarningDuration: 0.5
+  dashLineSweepDuration: 1.5
   maxStamina: 100
   staminaPerAttack: 20
   restDuration: 2
@@ -4565,7 +4631,7 @@ MonoBehaviour:
   attackRange: 1.5
   bossLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!1 &1407170125
 GameObject:
   m_ObjectHideFlags: 0
@@ -5529,7 +5595,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1754467912}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 388182961}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1754467912
 MonoBehaviour:
   m_ObjectHideFlags: 0

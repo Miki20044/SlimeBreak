@@ -58,4 +58,9 @@ public class PauseMenu : MonoBehaviour
         AudioListener.pause = false;
         SceneManager.LoadScene(1);
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }

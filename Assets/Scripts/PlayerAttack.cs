@@ -17,11 +17,21 @@ public class PlayerAttack : MonoBehaviour
     {
         Collider2D hit = Physics2D.OverlapCircle(transform.position, attackRange, bossLayer);
 
-        if (hit == null) return;
+        if (hit == null)
+        {
+            Debug.Log("[PlayerAttack] No boss in range (attackRange=" + attackRange + ", bossLayer=" + bossLayer.value + ")");
+            return;
+        }
 
         BossController boss = hit.GetComponent<BossController>();
 
-        if (boss == null) return;
+        if (boss == null)
+        {
+            Debug.Log("[PlayerAttack] Hit object but no BossController: " + hit.name);
+            return;
+        }
+
+        Debug.Log("[PlayerAttack] Found boss. CanBeDamaged=" + boss.CanBeDamaged() + " (isVulnerable=" + boss.isVulnerable + ", wasHit=" + boss.wasHitThisSleep + ")");
 
         if (boss.CanBeDamaged())
         {
