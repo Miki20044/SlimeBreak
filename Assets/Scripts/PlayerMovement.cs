@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
@@ -10,8 +12,16 @@ public class PlayerMovement : MonoBehaviour
     public float dashTime = 0.2f;
     public float dashCooldown = 1f;
 
+    [Header("Dash UI")]
+    public Image dashCooldownBar;
+    public TMP_Text dashCooldownText;
+    public string readyText = "Dash Ready";
+    public Color dashReadyColor = Color.white;
+    public Color dashCooldownColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+
     private float dashTimer;
     private float cooldownTimer;
+    private float lastCooldownDuration = 1f;
     private Vector3 dashDir;
     private bool dashing;
 
@@ -41,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        UpdateDashBar();
+
         if (isBeingPulled) return;
 
         if (dashing)
@@ -81,6 +93,36 @@ public class PlayerMovement : MonoBehaviour
             dashing = true;
             dashTimer = effectiveDashTime;
             cooldownTimer = dashCooldown * dashCooldownMult;
+            lastCooldownDuration = cooldownTimer;
+        }
+    }
+
+    void UpdateDashBar()
+    {
+        bool ready = cooldownTimer <= 0f;
+
+        if (dashCooldownBar != null)
+        {
+            if (ready)
+            {
+                dashCooldownBar.fillAmount = 1f;
+                dashCooldownBar.color = dashReadyColor;
+            }
+            else
+            {
+                // bar wypelnia sie od 0 do 1 w miare ladowania
+                float fill = 1f - (cooldownTimer / lastCooldownDuration);
+                dashCooldownBar.fillAmount = Mathf.Clamp01(fill);
+                dashCooldownBar.color = dashCooldownColor;
+            }
+        }
+
+        if (dashCooldownText != null)
+        {
+            if (ready)
+                dashCooldownText.text = readyText;
+            else
+                dashCooldownText.text = cooldownTimer.ToString("F1") + "s";
         }
     }
 

@@ -116,8 +116,12 @@ public class ScrambleQTEManager : MonoBehaviour
 
     void EndTimeEffect()
     {
-        Time.timeScale = 1f;
-        Time.fixedDeltaTime = 0.02f;
+        // nie resetuj jesli gra zostala spauzowana (np. GameOver)
+        if (Time.timeScale > 0f)
+        {
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = 0.02f;
+        }
     }
 
     void GenerateSequence()

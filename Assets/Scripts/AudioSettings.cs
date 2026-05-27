@@ -11,7 +11,7 @@ public class AudioSettings : MonoBehaviour
     [Header("Exposed Mixer Parameters")]
     public string masterParam = "MasterVolume";
     public string musicParam = "MusicVolume";
-    public string sfxParam = "SFXVolume";
+    public string sfxParam = "SfxVolume";
 
     const string KEY_MASTER = "vol_master";
     const string KEY_MUSIC = "vol_music";

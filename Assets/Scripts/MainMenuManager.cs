@@ -14,6 +14,12 @@ public class MainMenuManager : MonoBehaviour
             dm.AddComponent<DifficultyManager>();
         }
 
+        if (AudioSettings.instance == null)
+        {
+            GameObject ams = new GameObject("AudioSettings");
+            ams.AddComponent<AudioSettings>();
+        }
+
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
 

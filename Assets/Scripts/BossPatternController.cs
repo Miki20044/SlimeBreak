@@ -63,6 +63,14 @@ public class BossPatternController : MonoBehaviour
     {
         instance = this;
         audioSource = gameObject.AddComponent<AudioSource>();
+
+        // przypisz do SFX grupy mixera jesli AudioSettings istnieje
+        if (AudioSettings.instance != null && AudioSettings.instance.mixer != null)
+        {
+            var groups = AudioSettings.instance.mixer.FindMatchingGroups("Sfx");
+            if (groups.Length > 0)
+                audioSource.outputAudioMixerGroup = groups[0];
+        }
     }
 
     void Start()
@@ -105,7 +113,6 @@ public class BossPatternController : MonoBehaviour
 
     public void StartAttacking()
     {
-        Debug.Log("StartAttacking called!");
         StartCoroutine(PatternLoop());
     }
 
