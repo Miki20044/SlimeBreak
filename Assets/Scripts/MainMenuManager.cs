@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 public class MainMenuManager : MonoBehaviour
 {
     public GameObject settingsPanel;
+    public GameObject creditsPanel;
+
+    [Header("Hide when Settings/Credits is open")]
+    public GameObject[] hideOnPanelOpen;
 
     void Start()
     {
@@ -13,8 +17,17 @@ public class MainMenuManager : MonoBehaviour
             dm.AddComponent<DifficultyManager>();
         }
 
+        if (AudioSettings.instance == null)
+        {
+            GameObject ams = new GameObject("AudioSettings");
+            ams.AddComponent<AudioSettings>();
+        }
+
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
+
+        if (creditsPanel != null)
+            creditsPanel.SetActive(false);
     }
 
     public void StartGame()
@@ -26,12 +39,38 @@ public class MainMenuManager : MonoBehaviour
     {
         if (settingsPanel != null)
             settingsPanel.SetActive(true);
+        SetMainMenuVisible(false);
     }
 
     public void CloseSettings()
     {
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
+        SetMainMenuVisible(true);
+    }
+
+    public void OpenCredits()
+    {
+        if (creditsPanel != null)
+            creditsPanel.SetActive(true);
+        SetMainMenuVisible(false);
+    }
+
+    public void CloseCredits()
+    {
+        if (creditsPanel != null)
+            creditsPanel.SetActive(false);
+        SetMainMenuVisible(true);
+    }
+
+    void SetMainMenuVisible(bool visible)
+    {
+        if (hideOnPanelOpen == null) return;
+
+        foreach (GameObject go in hideOnPanelOpen)
+        {
+            if (go != null) go.SetActive(visible);
+        }
     }
 
     public void SetNormal()

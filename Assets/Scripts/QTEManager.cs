@@ -14,18 +14,27 @@ public class QTEManager : MonoBehaviour
     public CanvasGroup screenFade;
 
     [Header("Settings")]
-    public float interval = 10f;
+    public float interval = 15f;
     public float lineSpeed = 500f;
     public float successWidth = 60f;
 
+    [Header("Music")]
+    public float qtePitch = 0.75f;
+
+    [Header("SFX")]
+    public AudioClip qteStartSound;
+    public float qteStartVolume = 1f;
+
+    private AudioSource sfxSource;
+
     float timer;
+    float startDelay = 10f;
     bool active;
     bool startedMoving;
 
     float barWidth;
     float successX;
     KeyCode requiredKey;
-
 
     void Awake()
     {
@@ -36,17 +45,32 @@ public class QTEManager : MonoBehaviour
     {
         barWidth = bar.sizeDelta.x;
         timer = interval;
+        startDelay = 10f;
 
         bar.gameObject.SetActive(false);
+
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        if (AudioSettings.instance != null && AudioSettings.instance.mixer != null)
+        {
+            var groups = AudioSettings.instance.mixer.FindMatchingGroups("Sfx");
+            if (groups.Length > 0)
+                sfxSource.outputAudioMixerGroup = groups[0];
+        }
     }
 
     void Update()
     {
         if (!active)
         {
+            if (startDelay > 0)
+            {
+                startDelay -= Time.deltaTime;
+                return;
+            }
+
             timer -= Time.deltaTime;
 
-            if (timer <= 0)
+            if (timer <= 0 && BossIntro.instance != null && BossIntro.instance.CanAttack)
                 StartCoroutine(StartQTE());
 
             return;
@@ -72,6 +96,9 @@ public class QTEManager : MonoBehaviour
         active = true;
         startedMoving = false;
 
+        if (qteStartSound != null && sfxSource != null)
+            sfxSource.PlayOneShot(qteStartSound, qteStartVolume);
+
         bar.gameObject.SetActive(true);
 
         bar.anchoredPosition = new Vector2(
@@ -93,6 +120,9 @@ public class QTEManager : MonoBehaviour
                                KeyCode.T;
 
         keyText.text = requiredKey.ToString();
+
+        if (BossIntro.instance != null && BossIntro.instance.musicSource != null)
+            BossIntro.instance.musicSource.pitch = qtePitch;
 
         yield return new WaitForSeconds(1f);
 
@@ -121,13 +151,13 @@ public class QTEManager : MonoBehaviour
     void Fail()
     {
         if (PlayerHealth.instance != null)
-        PlayerHealth.instance.TakeDamage(PlayerHealth.instance.maxHealth * 0.25f, true);
+            PlayerHealth.instance.TakeDamage(PlayerHealth.instance.maxHealth * 0.25f, true);
 
         if (CameraShake.instance != null)
-        CameraShake.instance.Shake(0.2f, 0.1f);
+            CameraShake.instance.Shake(0.2f, 0.1f);
 
         if (SlowMotion.instance != null)
-        SlowMotion.instance.Play(0.1f, 0.5f);
+            SlowMotion.instance.Play(0.1f, 0.5f);
 
         if (screenFade != null)
             StartCoroutine(FadeFlash());
@@ -149,5 +179,8 @@ public class QTEManager : MonoBehaviour
         timer = interval;
 
         bar.gameObject.SetActive(false);
+
+        if (BossIntro.instance != null && BossIntro.instance.musicSource != null)
+            BossIntro.instance.musicSource.pitch = 1f;
     }
 }

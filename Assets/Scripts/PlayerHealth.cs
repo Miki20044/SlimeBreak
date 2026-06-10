@@ -12,6 +12,10 @@ public class PlayerHealth : MonoBehaviour
     [Header("UI")]
     public Image healthBar;
 
+    [Header("Audio")]
+    public AudioClip deathSound;
+    public float deathVolume = 1f;
+
     private bool diedFromQTE = false;
     private int qteFailCount = 0;
 
@@ -73,6 +77,9 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = 0;
         if (healthBar != null)
             healthBar.fillAmount = 0f;
+
+        if (deathSound != null)
+            AudioSource.PlayClipAtPoint(deathSound, transform.position, deathVolume);
 
         if (diedFromQTE)
         {

@@ -14,7 +14,7 @@ public class ScrambleQTEManager : MonoBehaviour
     public CanvasGroup darknessOverlay;
 
     [Header("QTE")]
-    public float interval = 10f;
+    public float interval = 15f;
     public float qteDuration = 5f;
     public int sequenceLength = 6;
 
@@ -24,6 +24,17 @@ public class ScrambleQTEManager : MonoBehaviour
     [Header("Darkness")]
     public float darknessIncrease = 0.25f;
     public float maxDarkness = 1f;
+
+    [Header("Music")]
+    public float qtePitch = 0.75f;
+
+    [Header("SFX")]
+    public AudioClip qteStartSound;
+    public float qteStartVolume = 1f;
+
+    private AudioSource sfxSource;
+
+    float startDelay = 10f;
 
     KeyCode[] possibleKeys =
     {
@@ -52,19 +63,34 @@ public class ScrambleQTEManager : MonoBehaviour
     void Start()
     {
         timer = interval;
+        startDelay = 10f;
         panel.SetActive(false);
 
         if (darknessOverlay != null)
             darknessOverlay.alpha = 0f;
+
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        if (AudioSettings.instance != null && AudioSettings.instance.mixer != null)
+        {
+            var groups = AudioSettings.instance.mixer.FindMatchingGroups("Sfx");
+            if (groups.Length > 0)
+                sfxSource.outputAudioMixerGroup = groups[0];
+        }
     }
 
     void Update()
     {
         if (!active)
         {
+            if (startDelay > 0)
+            {
+                startDelay -= Time.unscaledDeltaTime;
+                return;
+            }
+
             timer -= Time.unscaledDeltaTime;
 
-            if (timer <= 0)
+            if (timer <= 0 && BossIntro.instance != null && BossIntro.instance.CanAttack)
                 StartQTE();
 
             return;
@@ -87,6 +113,9 @@ public class ScrambleQTEManager : MonoBehaviour
     {
         active = true;
 
+        if (qteStartSound != null && sfxSource != null)
+            sfxSource.PlayOneShot(qteStartSound, qteStartVolume);
+
         currentTime = qteDuration;
         currentIndex = 0;
 
@@ -95,14 +124,21 @@ public class ScrambleQTEManager : MonoBehaviour
 
         panel.SetActive(true);
 
+        if (BossIntro.instance != null && BossIntro.instance.musicSource != null)
+            BossIntro.instance.musicSource.pitch = qtePitch;
+
         Time.timeScale = slowMotionScale;
         Time.fixedDeltaTime = 0.02f * slowMotionScale;
     }
 
     void EndTimeEffect()
     {
-        Time.timeScale = 1f;
-        Time.fixedDeltaTime = 0.02f;
+        // nie resetuj jesli gra zostala spauzowana (np. GameOver)
+        if (Time.timeScale > 0f)
+        {
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = 0.02f;
+        }
     }
 
     void GenerateSequence()
@@ -207,6 +243,9 @@ public class ScrambleQTEManager : MonoBehaviour
         timer = interval;
 
         panel.SetActive(false);
+
+        if (BossIntro.instance != null && BossIntro.instance.musicSource != null)
+            BossIntro.instance.musicSource.pitch = 1f;
 
         EndTimeEffect();
     }

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:claude.ai)",
+      "Bash(powershell -c \"Get-Item 'C:\\\\Users\\\\Lucek\\\\Downloads\\\\SlimeBreak-gra\\\\SlimeBreak-gra\\\\Assets\\\\Nowy folder\\\\slime-break-AD-HZ-MK.unity', 'C:\\\\Users\\\\Lucek\\\\Downloads\\\\SlimeBreak-gra\\\\SlimeBreak-gra\\\\Assets\\\\Scenes\\\\SampleScene.unity', 'C:\\\\Users\\\\Lucek\\\\Downloads\\\\SlimeBreak-gra\\\\SlimeBreak-gra\\\\Assets\\\\Scenes\\\\MainMenu.unity' | Select-Object FullName, Length, LastWriteTime\")"
+    ]
+  }
+}
